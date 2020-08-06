@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Index</title>
+
+<script type="text/javascript">
+	function ValidateCreditCardNumber() {
+
+		var ccNum = document.getElementById("cardNum").value;
+		ccNum = ccNum.replace(/[ -]/g, '');
+
+		var visaRegEx = /^(?:4[0-9]{12}(?:[0-9]{3})?)$/;
+		var mastercardRegEx = /^(?:5[1-5][0-9]{14})$/;
+		var amexpRegEx = /^(?:3[47][0-9]{13})$/;
+		var discovRegEx = /^(?:6(?:011|5[0-9][0-9])[0-9]{12})$/;
+
+		
+/*
+		if (visaRegEx.test(ccNum) === false) { // Visa validation
+			alert("Please provide a valid Visa number!");
+		} else {
+			alert("Thank You!");
+		}
+
+		if (mastercardRegEx.test(ccNum) === false) { // MasterCard validation
+			alert("Please provide a valid MasterCard number!");
+		} else {
+			alert("Thank You!");
+		}
+*/
+		if (amexpRegEx.test(ccNum) === false) { // Amex  validation
+			alert("Not a valid America Express number!");
+		} else {
+			alert("Thank You!");
+		}
+/*
+		if (discovRegEx.test(ccNum) === false) { // Discover validation
+			alert("Please provide a valid Discover number!");
+		} else {
+			alert("Thank You!");
+		}
+*/
+	}
+</script>
+</head>
+<body>
+	<div align="center">
+		<h1>Welcome Pravin</h1>
+		<a href="/register">Click me to register</a><br><br> 
+		<label>Credit Card Number : </label>
+		<input type="text" name="cardNumber"
+			id="cardNum" size="30" value="" onblur="ValidateCreditCardNumber()" /><br><br>
+		<label>Expiration Date :</label> 
+		<input type="month" name="expirationDate" id="eDate" value="2020-06" />
+		
+	</div>
+
+</body>
+</html>
