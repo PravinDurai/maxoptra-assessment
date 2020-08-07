@@ -28,9 +28,12 @@ public class AppController {
 	private HttpSession session;
 	
 	@GetMapping(value="/auth/login")
-	public String loginGetMapping(@ModelAttribute("Login") LoginModel login, HttpServletRequest request) {
+	public String loginGetMapping(@ModelAttribute("Login") LoginModel login, HttpServletRequest request, Model model) {
 		session=request.getSession();
 		List<CardDto> cardList=new ArrayList<CardDto>();
+		
+		model.addAttribute("cardList",cardList);
+		model.addAllAttributes(cardList);
 		session.setAttribute("cardList", cardList);
 		session.setMaxInactiveInterval(240);
 		return("login");
@@ -38,14 +41,15 @@ public class AppController {
 	
 	@PostMapping(value="/auth/user")
 	public String login(@ModelAttribute("Login") LoginModel login, Model model) {
-		if(login.geteMail().equals("guest@maxoptra.com")&&login.getPassword().equals("Password@1234")) {
-			model.addAttribute(new CardModel());
+		if(login.geteMail().equals("guest")&&login.getPassword().equals("Password@1234")) {
+			model.addAttribute("Card",new CardModel());
+			model.addAttribute("eMail",login.geteMail());
 			session.setAttribute("eMail", login.geteMail());
 			//List<CardDto> cardList=(List<CardDto>) session.getAttribute("cardList");
 			//session.setAttribute("cardList", cardList);
 			return("card");
 		}else {
-			model.addAttribute(new LoginModel());
+			model.addAttribute("Login",new LoginModel());
 			return("redirect:/auth/login");
 		}	
 	}
@@ -62,8 +66,17 @@ public class AppController {
 		CardDto c1=mapper.map(card, CardDto.class);
 		List<CardDto> cardList=(List<CardDto>) session.getAttribute("cardList");
 		cardList.add(c1);
+		
+		System.out.println("Card List using model");
 		cardList.forEach(temp->{System.out.println(temp.toString());});
 		return("redirect:/display");
+	}
+	
+	@GetMapping(value="/logout")
+	public String logout(Model model) {
+		model.addAttribute("Login", new LoginModel());
+		
+		return("login");
 	}
 	
 }
