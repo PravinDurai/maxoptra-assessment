@@ -1,13 +1,13 @@
-package com.maxoptra.assessment.application;
+package com.maxoptra.application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MaxoptraAssessment1SpringbootApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MaxoptraAssessment1SpringbootApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 
 }

@@ -1,1 +1,0 @@
-# maxoptra-assessment

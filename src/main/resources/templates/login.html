@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<title>Login</title>
+</head>
+<body>
+	<div align="justify" class="container"><br><br>
+
+		<form action="#" th:action="@{/auth/user}" method="post"
+			th:object="${Login}" class="needs-validation" novalidate>
+			<div class="container-fluid">
+				<div class="row">
+					<div align="center" class="col-lg-12">
+						<h2>Welcome</h2>
+					</div>
+				</div><br><br>
+				<div class="row form-froup">
+					<!-- <div class="form-group">  -->
+					<div align="right" class="col-lg-5">
+						<label for="uname">Username:</label>
+					</div>
+					<div align="left" class="col-lg-4">
+						<input type="text" th:field="*{eMail}" class="form-control"
+							id="uname" placeholder="Enter E-Mail" name="uname" required>
+						<div class="valid-feedback">Valid.</div>
+						<div class="invalid-feedback">Please fill out this field.</div>
+					</div>
+					<!-- </div>  -->
+				</div><br>
+				<div class="row form-froup">
+					<!-- <div class="form-group">  -->
+					<div align="right" class="col-lg-5">
+						<label for="pwd">Password:</label>
+					</div>
+					<div align="left" class="col-lg-4">
+						<input type="password" th:field="*{password}" class="form-control"
+							id="pwd" placeholder="Enter Password" name="pswd" required>
+						<div class="valid-feedback">Valid.</div>
+						<div class="invalid-feedback">Please fill out this field.</div>
+					</div>
+					<!-- </div>  -->
+				</div><br>
+
+
+				<!--
+			<div class="form-group form-check">
+				<label class="form-check-label"> <input
+					class="form-check-input" type="checkbox" name="remember" required>
+					I agree on blabla.
+					<div class="valid-feedback">Valid.</div>
+					<div class="invalid-feedback">Check this checkbox to
+						continue.</div>
+				</label>
+			</div>
+			-->
+
+				<div class="row">
+					<div align="center" class="col-lg-12">
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<script>
+		// Disable form submissions if there are invalid fields
+		(function() {
+			'use strict';
+			window.addEventListener('load',
+					function() {
+						// Get the forms we want to add validation styles to
+						var forms = document
+								.getElementsByClassName('needs-validation');
+						// Loop over them and prevent submission
+						var validation = Array.prototype.filter.call(forms,
+								function(form) {
+									form.addEventListener('submit', function(
+											event) {
+										if (form.checkValidity() === false) {
+											event.preventDefault();
+											event.stopPropagation();
+										}
+										form.classList.add('was-validated');
+									}, false);
+								});
+					}, false);
+		})();
+	</script>
+
+</body>
+</html>
