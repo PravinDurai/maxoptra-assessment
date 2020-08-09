@@ -19,7 +19,7 @@ public class CardDto {
 	private String expiryYear;
 	
 	private String expiryDate;
-
+	
 	public String getBankName() {
 		return bankName;
 	}
