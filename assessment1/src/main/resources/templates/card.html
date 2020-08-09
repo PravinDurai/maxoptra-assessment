@@ -24,31 +24,25 @@
 		var amexpRegEx = /^(?:3[47][0-9]{13})$/;
 		var discovRegEx = /^(?:6(?:011|5[0-9][0-9])[0-9]{12})$/;
 
-		/*
-		 if (visaRegEx.test(ccNum) === false) { // Visa validation
-		 alert("Please provide a valid Visa number!");
-		 } else {
-		 alert("Thank You!");
-		 }
-
-		 if (mastercardRegEx.test(ccNum) === false) { // MasterCard validation
-		 alert("Please provide a valid MasterCard number!");
-		 } else {
-		 alert("Thank You!");
-		 }
-		 */
-		if (amexpRegEx.test(ccNum) === false) { // Amex  validation
-			alert("Not a valid America Express number!");
+		if (visaRegEx.test(ccNum) === true) { // Visa validation
+			alert("Your Card is validatred successfully...!!!");
 		} else {
-			alert("Thank You!");
+			if (mastercardRegEx.test(ccNum) === true) { // MasterCard validation
+				alert("Your Card is validatred successfully...!!!");
+
+			} else {
+				if (amexpRegEx.test(ccNum) === true) { // Amex  validation
+					alert("Your Card is validatred successfully...!!!");
+				} else {
+					if (discovRegEx.test(ccNum) === true) { // Discover validation
+						alert("Your Card is validatred successfully...!!!");
+					} else {
+						alert("Please provide a valid card number!");
+						document.getElementById("cardNum").value="";
+					}
+				}
+			}
 		}
-		/*
-		 if (discovRegEx.test(ccNum) === false) { // Discover validation
-		 alert("Please provide a valid Discover number!");
-		 } else {
-		 alert("Thank You!");
-		 }
-		 */
 	}
 
 	$(document).ready(function() {
@@ -72,7 +66,7 @@
 
 	</div>
 	<form action="#" th:action="@{/add/card}" method="post"
-		th:object="${Card}" class="needs-validation" >
+		th:object="${Card}" class="needs-validation">
 		<div align="center" class="container-fluid">
 
 			<br> <br>
@@ -240,59 +234,5 @@
 			    -->
 			</tbody>
 	</div>
-
-	<!--  
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-3"></div>
-			<div class="col-lg-1"></div>
-			<div class="col-lg-8">
-				<div class="card" style="width: 400px">
-					<div class="card-body">
-						<div class="row">
-							<div align="right" class="col-sm-5">
-								<label>Bank Name :</label>
-							</div>
-							<div class="col-sm-7">
-								<input class="form-control" type="text"
-									placeholder="Enter Bank Name" name="bankName" id="bankName"
-									value="" required="required" />
-							</div>
-						</div>
-
-						<br>
-						<div class="row">
-							<div align="right" class="col-sm-5">
-								<label>Card Number :</label>
-							</div>
-							<div class="col-sm-7">
-								<input class="form-control" type="text"
-									placeholder="Card Number (eg xxxx-xxxx-xxxx-xxx)"
-									name="cardNumber" id="cardNum" value=""
-									onblur="ValidateCreditCardNumber()" required="required" />
-							</div>
-						</div>
-						<br>
-						<div class="row">
-							<div align="right" class="col-sm-5">
-								<label>Expiration Date :</label>
-							</div>
-							<div class="col-sm-7">
-								<input class="form-control" type="month" name="expirationDate"
-									id="eDate" value="2020-06">
-							</div>
-						</div>
-						<br>
-						<div class="row">
-							<div align="center" class="col-sm-12	">
-							<button type="submit" class="btn btn-primary">Add Card</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
--->
 </body>
 </html>
