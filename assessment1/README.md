@@ -1,3 +1,5 @@
+#port number : 1990
+
 #User Name : guest
 #password : Password@1234
 
@@ -15,7 +17,7 @@
 #4. Now press Logout -> It's just to redirect you to the login screen. The code isn't killing your session
 #5. Now re-enter your credentials to login
 #6. you will be able to see your data in the table
-#7. If you remain in-active for more than 240 seconds then your session will be terminated
+#7. If you remain in-active for more than 240 seconds (Just for validation purpose) then your session will be terminated
 #8. Now Launch the application and try logging in
 #9. Inference -> you won't be able to see your data in the table
 #try using logout to navigate to the login screen then enter your credentials
