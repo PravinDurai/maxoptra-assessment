@@ -28,6 +28,7 @@
 #Note (Validation)
 #while uploading the card details via file, If it finds a particular card number is not valid then those cards won't be displayed in the output
 #We get only the valid cards in the form of tables
+#There is one drawback in this ie., when the session gets invalidated after 240 seconds. I haven't added a code to redirect it to the Login page.
 
 #When you try to upload without selecting a file then you get an error message asking you to upload the file
 
