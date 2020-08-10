@@ -1,5 +1,8 @@
 #port number : Runs on any port that is available
 
+#I have also deployed assessment 1 in cloud through CI from from git repository
+# Heroku URL to access the app : https://maxoptra-assessment.herokuapp.com/
+
 #User Name : guest
 #password : Password@1234
 
