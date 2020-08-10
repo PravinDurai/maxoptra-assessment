@@ -1,5 +1,7 @@
 package com.maxoptra.application.controller;
 
+import static org.assertj.core.api.Assertions.not;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -43,135 +45,134 @@ import com.opencsv.bean.CsvToBeanBuilder;
 
 @Controller
 public class AppController {
-	
+
 	@Autowired
 	AppService appService;
-	
+
 	private HttpSession session;
-	
-	
-//	private HttpSessionListener sessionListener;
-	
-	@GetMapping(value="/auth/login")
+
+	private boolean nofile = false;
+
+	@GetMapping(value = "/auth/login")
 	public String loginGetMapping(@ModelAttribute("Login") LoginModel login, HttpServletRequest request, Model model) {
-		session=request.getSession();
-//		sessionListener.sessionCreated(new HttpSessionEvent(session));
-		List<CardDto> cardList=new ArrayList<CardDto>();
-		Map<Long, CardDto> cardMap=new TreeMap<Long, CardDto>();
-		
-		
-//		model.addAttribute("cardList",cardList);
+		session = request.getSession();
+		List<CardDto> cardList = new ArrayList<CardDto>();
+		Map<Long, CardDto> cardMap = new TreeMap<Long, CardDto>();
 		session.setAttribute("cardList", cardList);
 		session.setAttribute("cardMap", cardMap);
 		session.setMaxInactiveInterval(240);
-		return("login");
+		return ("login");
 	}
-	
-	@PostMapping(value="/auth/user")
+
+	@PostMapping(value = "/auth/user")
 	public String login(@ModelAttribute("Login") LoginModel login, Model model) {
-		if(login.geteMail().equals("guest")&&login.getPassword().equals("Password@1234")) {
-			model.addAttribute("Card",new CardModel());
+		if (login.geteMail().equals("guest") && login.getPassword().equals("Password@1234")) {
+			model.addAttribute("Card", new CardModel());
 			model.addAttribute("File", new FileUploadModel());
-			model.addAttribute("eMail",login.geteMail());
+			model.addAttribute("eMail", login.geteMail());
 			session.setAttribute("eMail", login.geteMail());
 			model.addAttribute("message", "Upload a file that contains Card information");
-            model.addAttribute("status", true);
-			//List<CardDto> cardList=(List<CardDto>) session.getAttribute("cardList");
-			//session.setAttribute("cardList", cardList);
-			return("card");
-		}else {
-			model.addAttribute("Login",new LoginModel());
-			return("redirect:/auth/login");
-		}	
+			model.addAttribute("status", true);
+			session.setAttribute("uploadError", true);
+
+			return ("card");
+		} else {
+			model.addAttribute("Login", new LoginModel());
+			return ("redirect:/auth/login");
+		}
 	}
-	
-	@GetMapping(value="/display")
+
+	@GetMapping(value = "/display")
 	public String display(@ModelAttribute("Card") CardModel card, Model model) {
-		  model.addAttribute("message", "Upload a file that contains Card information");
-		  model.addAttribute("status", true);
-		return("card");
+		model.addAttribute("message", "Upload a file that contains Card information");
+		model.addAttribute("status", true);
+		if (nofile) {
+			nofile=false;
+			session.setAttribute("uploadError", true);
+			session.setAttribute("message", "Please upload a file that has data");
+		}
+		return ("card");
 	}
-	
-	@PostMapping(value="/add/card")
-	public String addCard(@ModelAttribute("Card") CardModel card,Model model) {
-		ModelMapper mapper=new ModelMapper();
+
+	@PostMapping(value = "/add/card")
+	public String addCard(@ModelAttribute("Card") CardModel card, Model model) {
+		ModelMapper mapper = new ModelMapper();
 		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-		CardDto c1=mapper.map(card, CardDto.class);
-//		List<CardDto> cardList=(List<CardDto>) session.getAttribute("cardList");
-		Map<Long,CardDto> cardMap=(Map<Long, CardDto>) session.getAttribute("cardMap");
-		
+		CardDto c1 = mapper.map(card, CardDto.class);
+
+		Map<Long, CardDto> cardMap = (Map<Long, CardDto>) session.getAttribute("cardMap");
+
 		c1.setEncCardNumber(appService.convertCardNumber(c1.getCardNumber()));
-		Date date=new Date();
+		Date date = new Date();
 		date.setMonth(Integer.parseInt(c1.getExpiryMonth()));
 		date.setYear(Integer.parseInt(c1.getExpiryYear()));
 		c1.setExpiryDate(appService.getOutputExpiryDate(date));
-//		cardList.add(c1);
 		cardMap.put(date.getTime(), c1);
-//		cardList.forEach(temp->{System.out.println(temp.toString());});
-		System.out.println("Printing the value using map");
-		for(Long temp:cardMap.keySet()) {
-			System.out.println(cardMap.get(temp).toString());
-		}
+
 		model.addAttribute("message", "Upload a file that contains Card information");
 		model.addAttribute("status", true);
-		
-		return("redirect:/display");
+
+		return ("redirect:/display");
 	}
-	
-	@PostMapping(value="/file/upload")
-	public String fileUpload(@RequestParam("file") MultipartFile file, Model model){
-		Map<Long,CardDto> cardMap=(Map<Long, CardDto>) session.getAttribute("cardMap");
-		if(file.isEmpty()) {
-			model.addAttribute("message", "Please select a CSV file to upload.");
-            model.addAttribute("status", false);
-		}else {
-			//parsing CSV File to user object
+
+	@PostMapping(value = "/file/upload")
+	public String fileUpload(@RequestParam("file") MultipartFile file, Model model) {
+		Map<Long, CardDto> cardMap = (Map<Long, CardDto>) session.getAttribute("cardMap");
+		if (file.isEmpty()) {
+			session.setAttribute("uploadError", nofile);
+			session.setAttribute("message", "Please upload a file that has data");
+		} else {
+			nofile=true;
+			session.setAttribute("uploadError", true);
 			try {
-				
-				System.out.println("File :\t"+file.getOriginalFilename());
-				
 				BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
-//				File file1=new File(file.getOriginalFilename());
-//				System.out.println("Temp File Path :\t"+file1.getAbsolutePath());
-//				file.transferTo(file1);
-				CsvToBean<CSVFileDto> csvToBean=new CsvToBeanBuilder(reader)
-						.withType(CSVFileDto.class)
-						.withIgnoreLeadingWhiteSpace(true)
-						.build();
-				String line="";
+//				CsvToBean<CSVFileDto> csvToBean=new CsvToBeanBuilder(reader)
+//						.withType(CSVFileDto.class)
+//						.withIgnoreLeadingWhiteSpace(true)
+//						.build();
+				String line = "";
 				String tempArr[];
-				int i=0;
-				while((line=reader.readLine())!=null) {
-					if(i++==0)continue;
-					tempArr=line.split(",");
-					System.out.println(tempArr[0]+tempArr[1]+tempArr[2]);
-					CardDto csvFileDto=new CardDto();
+				int i = 0;
+				while ((line = reader.readLine()) != null) {
+					if (i++ == 0)
+						continue;
+					tempArr = line.split(",");
+					CardDto csvFileDto = new CardDto();
 					csvFileDto.setBankName(tempArr[0]);
+					csvFileDto.setCardNumber(tempArr[1]);
 					csvFileDto.setEncCardNumber(appService.convertCardNumber(tempArr[1]));
 					csvFileDto.setExpiryDate(tempArr[2]);
-					Long time=appService.getExpiryTimeInMillSec(tempArr[2]);
-					System.out.println(csvFileDto.toString());
+					Long time = appService.getExpiryTimeInMillSec(tempArr[2]);
 					cardMap.put(time, csvFileDto);
 				}
-				System.out.println("Within File Upload");
-				for(Long temp:cardMap.keySet()) {
-					System.out.println(cardMap.get(temp).toString());
-				}
-				
+				List<CardDto> invalidRecords = appService.validateCardinFile(cardMap);
+				invalidRecords.forEach(temp -> {
+					temp.toString();
+				});
+
 				model.addAttribute("status", true);
-				
-			}catch(Exception exc) {
+				if (invalidRecords == null || invalidRecords.isEmpty()) {
+					session.setAttribute("invalidDataStatus", true);
+					session.setAttribute("invalidData", true);
+				} else {
+					session.setAttribute("invalidDataStatus", false);
+					session.setAttribute("invalidData", false);
+				}
+
+			} catch (Exception exc) {
 				model.addAttribute("message", "Error occured while processing the CSV File");
-	            model.addAttribute("status", false);
+				model.addAttribute("status", false);
+				session.setAttribute("uploadError", false);
+				session.setAttribute("message", "Please upload a file that has data");
 			}
 		}
-		return("redirect:/display");
+		return ("redirect:/display");
 	}
-	
-	@GetMapping(value="/logout")
+
+	@GetMapping(value = "/logout")
 	public String logout(Model model) {
 		model.addAttribute("Login", new LoginModel());
-		return("login");
+		return ("login");
 	}
-	
+
 }
